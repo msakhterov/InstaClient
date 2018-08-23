@@ -2,7 +2,10 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimaryLight">#03A9F4</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorBackground">#ffffff</color>
+    <color name="colorDrawerHeader">#ffffff</color>
 
     <color name="colorRedPrimary">#F44336</color>
     <color name="colorRedPrimaryDark">#D32F2F</color>

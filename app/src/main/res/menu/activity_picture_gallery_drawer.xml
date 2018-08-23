@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/activated_background">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/picture_gallery_drawer"
+            android:icon="@drawable/ic_photo"
+            android:title="@string/picture_gallery_drawer_item" />
+
+        <item
+            android:id="@+id/change_theme_drawer"
+            android:icon="@drawable/ic_color"
+            android:title="@string/change_theme_color_drawer_item" />
+    </group>
+
+</menu>

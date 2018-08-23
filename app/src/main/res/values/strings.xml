@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">InstaClient</string>
     <string name="change_theme_color">Change theme color</string>
+    <string name="picture_gallery_drawer_item">Picture Gallery</string>
+    <string name="change_theme_color_drawer_item">Change theme color</string>
+    <string name="navigation_drawer_open">Open drawer</string>
+    <string name="navigation_drawer_close">Close drawer</string>
 </resources>

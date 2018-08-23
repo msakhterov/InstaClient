@@ -6,10 +6,13 @@
 
     <color name="colorRedPrimary">#F44336</color>
     <color name="colorRedPrimaryDark">#D32F2F</color>
+    <color name="colorRedAccent">#00BCD4</color>
 
     <color name="colorGreenPrimary">#4CAF50</color>
     <color name="colorGreenPrimaryDark">#388E3C</color>
+    <color name="colorGreenAccent">#E040FB</color>
 
     <color name="colorBluePrimary">#2196F3</color>
     <color name="colorBluePrimaryDark">#1976D2</color>
+    <color name="colorBlueAccent">#FFEB3B</color>
 </resources>

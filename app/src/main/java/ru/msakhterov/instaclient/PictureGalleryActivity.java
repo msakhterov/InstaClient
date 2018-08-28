@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import ru.msakhterov.instaclient.model.Picture;
+import ru.msakhterov.instaclient.utils.Constants;
 
 public class PictureGalleryActivity extends AppCompatActivity implements PicturesGalleryFragment.PictureGalleryListener, NavigationView.OnNavigationItemSelectedListener {
 
@@ -24,7 +25,7 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        setTheme(sp.getInt("THEME", R.style.AppTheme));
+        setTheme(sp.getInt(Constants.THEME_CONSTANT, R.style.AppTheme));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture_gallery_drawer);

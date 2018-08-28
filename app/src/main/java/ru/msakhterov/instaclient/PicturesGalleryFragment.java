@@ -45,16 +45,10 @@ public class PicturesGalleryFragment extends Fragment {
         return view;
     }
 
-    /**
-     * Интерфейс взаимодействия с активностью
-     */
     public interface PictureGalleryListener {
         void onPictureSelected(Picture picture);
     }
 
-    /**
-     * Холдер
-     */
     private class PictureHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private Picture picture;
@@ -74,9 +68,6 @@ public class PicturesGalleryFragment extends Fragment {
         }
     }
 
-    /**
-     * Адаптер
-     */
     private class PictureGalleryAdapter extends RecyclerView.Adapter<PictureHolder> {
 
         private List<Picture> pictures;

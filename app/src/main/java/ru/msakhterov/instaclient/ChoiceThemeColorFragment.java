@@ -18,7 +18,7 @@ import java.util.List;
 
 public class ChoiceThemeColorFragment extends Fragment {
 
-    private static final String TAG = "ChoiceThemeColorFragmentTag";
+    private static final String TAG = "ChoiceThemeFragmentTag";
 
     private RecyclerView mRecyclerView;
     private ThemeColorListener mThemeColorListener;
@@ -30,7 +30,6 @@ public class ChoiceThemeColorFragment extends Fragment {
         mThemeColorListener = (ThemeColorListener) context;
     }
 
-    @SuppressLint("LongLogTag")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(TAG, "Фрагмент выбора темы запущен");
@@ -41,16 +40,10 @@ public class ChoiceThemeColorFragment extends Fragment {
         return view;
     }
 
-    /**
-     * Интерфейс взаимодействия с активностью
-     */
     public interface ThemeColorListener {
         void onColorSelected(Integer color);
     }
 
-    /**
-     * Холдер
-     */
     private class ThemeColorHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private Integer color;
@@ -72,9 +65,6 @@ public class ChoiceThemeColorFragment extends Fragment {
         }
     }
 
-    /**
-     * Адаптер
-     */
     private class ThemeColorAdapter extends RecyclerView.Adapter<ThemeColorHolder> {
 
         private List<Integer> colors;

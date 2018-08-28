@@ -17,28 +17,25 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import ru.msakhterov.instaclient.utils.Constants;
+
 public class ChoiceThemeColorActivity extends AppCompatActivity implements ChoiceThemeColorFragment.ThemeColorListener, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String CHOICE_THEME_COLOR_FRAGMENT_TAG = "choice_theme_color_fragment_tag";
-    private static final String TAG = "ChoiceThemeColorActivityTag";
+    private static final String TAG = "ChoiceThemeActivityTag";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        setTheme(sp.getInt("THEME", R.style.AppTheme));
+        setTheme(sp.getInt(Constants.THEME_CONSTANT, R.style.AppTheme));
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choice_theme_drawer);
+        setContentView(R.layout.activity_choice_theme);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         ChoiceThemeColorFragment choiceThemeColorFragment = new ChoiceThemeColorFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -46,7 +43,6 @@ public class ChoiceThemeColorActivity extends AppCompatActivity implements Choic
         transaction.commit();
     }
 
-    @SuppressLint("LongLogTag")
     @Override
     public void onColorSelected(Integer color) {
         Log.d(TAG, "onColorSelected" + color);
@@ -66,7 +62,7 @@ public class ChoiceThemeColorActivity extends AppCompatActivity implements Choic
                 theme = R.style.AppTheme;
                 break;
         }
-        sp.edit().putInt("THEME", theme).apply();
+        sp.edit().putInt(Constants.THEME_CONSTANT, theme).apply();
         this.recreate();
     }
 

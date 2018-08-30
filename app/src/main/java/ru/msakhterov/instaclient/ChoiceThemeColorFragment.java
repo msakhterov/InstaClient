@@ -1,6 +1,5 @@
 package ru.msakhterov.instaclient;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;

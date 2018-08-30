@@ -1,28 +1,26 @@
 package ru.msakhterov.instaclient;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ru.msakhterov.instaclient.model.Picture;
+import ru.msakhterov.instaclient.utils.PictureLab;
 
 
 public class PicturesGalleryFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private PictureGalleryListener mPictureGalleryListener;
+    private PictureGalleryAdapter mPictureGalleryAdapter;
 
     @Override
     public void onAttach(Context context) {
@@ -41,7 +39,8 @@ public class PicturesGalleryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-        mRecyclerView.setAdapter(new PictureGalleryAdapter(new ArrayList<Picture>()));
+//        mRecyclerView.setAdapter(new PictureGalleryAdapter(new ArrayList<Picture>()));
+        updateUI();
         return view;
     }
 
@@ -52,14 +51,19 @@ public class PicturesGalleryFragment extends Fragment {
     private class PictureHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private Picture picture;
+        private ImageView mItemImageView;
 
         PictureHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.picture_gallery_item, parent, false));
+            mItemImageView = itemView.findViewById(R.id.item_image_view);
             itemView.setOnClickListener(this);
+
         }
 
         public void bind(Picture picture) {
             this.picture = picture;
+            mItemImageView.setImageBitmap(picture.getPicture());
+
         }
 
         @Override
@@ -92,5 +96,20 @@ public class PicturesGalleryFragment extends Fragment {
         public int getItemCount() {
             return pictures.size();
         }
+
+        public void setPictures(List<Picture> pictures) {
+            this.pictures = pictures;
+        }
+    }
+
+    public void updateUI() {
+        List<Picture> pictures = PictureLab.get(getActivity()).getPicturesList();
+        if (mPictureGalleryAdapter == null) {
+            mPictureGalleryAdapter = new PictureGalleryAdapter(pictures);
+        } else {
+            mPictureGalleryAdapter.setPictures(pictures);
+            mPictureGalleryAdapter.notifyDataSetChanged();
+        }
+        mRecyclerView.setAdapter(mPictureGalleryAdapter);
     }
 }

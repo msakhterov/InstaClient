@@ -1,26 +1,42 @@
 package ru.msakhterov.instaclient;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import java.io.File;
+import java.util.List;
 
 import ru.msakhterov.instaclient.model.Picture;
 import ru.msakhterov.instaclient.utils.Constants;
+import ru.msakhterov.instaclient.utils.PictureLab;
 
 public class PictureGalleryActivity extends AppCompatActivity implements PicturesGalleryFragment.PictureGalleryListener, NavigationView.OnNavigationItemSelectedListener {
 
     private static final String PICTURE_GALLERY_FRAGMENT_TAG = "picture_gallery_fragment_tag";
+    private static final String TAG = "PictureGalleryActTag";
+    private static final int REQUEST_PHOTO = 0;
+    File photoFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +55,14 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
         toggle.syncState();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addNewPhoto();
+            }
+        });
 
         PicturesGalleryFragment picturesGalleryFragment = new PicturesGalleryFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -87,9 +111,54 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
         return true;
     }
 
-    private void selectChoiceThemeColor(){
+    private void selectChoiceThemeColor() {
         Intent intent = new Intent(this, ChoiceThemeColorActivity.class);
         startActivity(intent);
     }
 
-}
+    private void addNewPhoto() {
+
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+            Picture picture = new Picture();
+            photoFile = PictureLab.get(this).getPhotoFile(picture);
+            Log.d(TAG, photoFile.getPath());
+            if (photoFile != null) {
+                Uri uri = FileProvider.getUriForFile(this,
+                        "com.msakhterov.instaclient.fileprovider",
+                        photoFile);
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                List<ResolveInfo> cameraActivities = getPackageManager().queryIntentActivities(cameraIntent,
+                                PackageManager.MATCH_DEFAULT_ONLY);
+
+                for (ResolveInfo activity : cameraActivities) {
+                    grantUriPermission(activity.activityInfo.packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                }
+
+                startActivityForResult(cameraIntent, REQUEST_PHOTO);
+            }
+        }
+    }
+
+
+        @Override
+        public void onActivityResult ( int requestCode, int resultCode, Intent data){
+            super.onActivityResult(requestCode, resultCode, data);
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == REQUEST_PHOTO) {
+                    Uri uri = FileProvider.getUriForFile(this,
+                            "com.msakhterov.instaclient.fileprovider",
+                            photoFile);
+                    revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                    updatePicturesList();
+                }
+
+            }
+        }
+
+        public void updatePicturesList () {
+            PicturesGalleryFragment picturesGalleryFragment = (PicturesGalleryFragment) getSupportFragmentManager().findFragmentByTag(PICTURE_GALLERY_FRAGMENT_TAG);
+        picturesGalleryFragment.updateUI();
+        }
+    }

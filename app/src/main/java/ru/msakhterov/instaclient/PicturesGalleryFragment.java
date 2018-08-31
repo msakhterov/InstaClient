@@ -1,7 +1,9 @@
 package ru.msakhterov.instaclient;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,36 +12,46 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import ru.msakhterov.instaclient.model.Picture;
+import ru.msakhterov.instaclient.utils.Constants;
 import ru.msakhterov.instaclient.utils.PictureLab;
 
 
 public class PicturesGalleryFragment extends Fragment {
 
+    private static final String TAG = "PicturesGalleryFragment";
     private RecyclerView mRecyclerView;
     private PictureGalleryListener mPictureGalleryListener;
     private PictureGalleryAdapter mPictureGalleryAdapter;
+    private PictureLab mPictureLab;
+    private int spanCount;
+
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mPictureGalleryListener = (PictureGalleryListener) context;
+        mPictureLab = new PictureLab(getActivity());
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+            spanCount = Constants.SPAN_COUNT_VERTICAL;
+        else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+            spanCount = Constants.SPAN_COUNT_HORIZONTAL;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
         mRecyclerView = view.findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-//        mRecyclerView.setAdapter(new PictureGalleryAdapter(new ArrayList<Picture>()));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
         updateUI();
         return view;
     }
@@ -53,17 +65,15 @@ public class PicturesGalleryFragment extends Fragment {
         private Picture picture;
         private ImageView mItemImageView;
 
-        PictureHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.picture_gallery_item, parent, false));
+        PictureHolder(View itemView) {
+            super(itemView);
             mItemImageView = itemView.findViewById(R.id.item_image_view);
             itemView.setOnClickListener(this);
-
         }
 
         public void bind(Picture picture) {
             this.picture = picture;
-            mItemImageView.setImageBitmap(picture.getPicture());
-
+            Picasso.with(getContext()).load(picture.getPath()).resize(mPictureLab.getImagePreviewSize(spanCount), mPictureLab.getImagePreviewSize(spanCount)).into(mItemImageView);
         }
 
         @Override
@@ -80,15 +90,18 @@ public class PicturesGalleryFragment extends Fragment {
             this.pictures = pictures;
         }
 
+        @NonNull
         @Override
-        public PictureHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public PictureHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
-            return new PictureHolder(inflater, parent);
+            View view = inflater.inflate(R.layout.picture_gallery_item, parent, false);
+            return new PictureHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(final PictureHolder holder, int position) {
+        public void onBindViewHolder(@NonNull final PictureHolder holder, int position) {
             Picture picture = pictures.get(position);
+            holder.mItemImageView.setVisibility(View.VISIBLE);
             holder.bind(picture);
         }
 
@@ -103,7 +116,7 @@ public class PicturesGalleryFragment extends Fragment {
     }
 
     public void updateUI() {
-        List<Picture> pictures = PictureLab.get(getActivity()).getPicturesList();
+        List<Picture> pictures = mPictureLab.getPicturesList();
         if (mPictureGalleryAdapter == null) {
             mPictureGalleryAdapter = new PictureGalleryAdapter(pictures);
         } else {

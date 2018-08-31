@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
@@ -36,7 +37,9 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
     private static final String PICTURE_GALLERY_FRAGMENT_TAG = "picture_gallery_fragment_tag";
     private static final String TAG = "PictureGalleryActTag";
     private static final int REQUEST_PHOTO = 0;
-    File photoFile;
+    private File photoFile;
+    private PictureLab mPictureLab;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +48,7 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture_gallery_drawer);
+        mPictureLab = new PictureLab(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -121,7 +125,7 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
             Picture picture = new Picture();
-            photoFile = PictureLab.get(this).getPhotoFile(picture);
+            photoFile = mPictureLab.getPhotoFile(picture);
             Log.d(TAG, photoFile.getPath());
             if (photoFile != null) {
                 Uri uri = FileProvider.getUriForFile(this,
@@ -129,36 +133,32 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
                         photoFile);
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                 List<ResolveInfo> cameraActivities = getPackageManager().queryIntentActivities(cameraIntent,
-                                PackageManager.MATCH_DEFAULT_ONLY);
-
+                        PackageManager.MATCH_DEFAULT_ONLY);
                 for (ResolveInfo activity : cameraActivities) {
                     grantUriPermission(activity.activityInfo.packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 }
-
                 startActivityForResult(cameraIntent, REQUEST_PHOTO);
             }
         }
     }
 
-
-        @Override
-        public void onActivityResult ( int requestCode, int resultCode, Intent data){
-            super.onActivityResult(requestCode, resultCode, data);
-            if (resultCode == Activity.RESULT_OK) {
-                if (requestCode == REQUEST_PHOTO) {
-                    Uri uri = FileProvider.getUriForFile(this,
-                            "com.msakhterov.instaclient.fileprovider",
-                            photoFile);
-                    revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
-                    updatePicturesList();
-                }
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_PHOTO) {
+                Uri uri = FileProvider.getUriForFile(this,
+                        "com.msakhterov.instaclient.fileprovider",
+                        photoFile);
+                revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                Snackbar.make(findViewById(R.id.coordinator), R.string.photo_added, Snackbar.LENGTH_LONG).show();
+                updatePicturesList();
             }
         }
-
-        public void updatePicturesList () {
-            PicturesGalleryFragment picturesGalleryFragment = (PicturesGalleryFragment) getSupportFragmentManager().findFragmentByTag(PICTURE_GALLERY_FRAGMENT_TAG);
-        picturesGalleryFragment.updateUI();
-        }
     }
+
+    public void updatePicturesList() {
+        PicturesGalleryFragment picturesGalleryFragment = (PicturesGalleryFragment) getSupportFragmentManager().findFragmentByTag(PICTURE_GALLERY_FRAGMENT_TAG);
+        picturesGalleryFragment.updateUI();
+    }
+}

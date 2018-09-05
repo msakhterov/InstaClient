@@ -10,10 +10,12 @@ import ru.msakhterov.instaclient.PicturesGalleryFragment;
 
 public class PictureFragmentPagerAdapter extends FragmentPagerAdapter {
 
+    private Fragment mCurrentFragment;
 
     public PictureFragmentPagerAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);
     }
+
 
     @Override
     public Fragment getItem(int position) {
@@ -51,4 +53,16 @@ public class PictureFragmentPagerAdapter extends FragmentPagerAdapter {
         return fragment;
     }
 
+    @Override
+    public void setPrimaryItem(ViewGroup container, int position, Object object) {
+        if (getCurrentFragment() != object) {
+            mCurrentFragment = ((Fragment) object);
+        }
+        super.setPrimaryItem(container, position, object);
+    }
+
+
+    public Fragment getCurrentFragment() {
+        return mCurrentFragment;
+    }
 }

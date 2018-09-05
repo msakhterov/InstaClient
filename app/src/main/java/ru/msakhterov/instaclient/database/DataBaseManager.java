@@ -138,7 +138,6 @@ public class DataBaseManager {
         protected Boolean doInBackground(Picture... pictures) {
             Picture picture = pictures[0];
             String path = picture.getPath().toString();
-            ;
             database.delete(DataBaseSchema.PicturesTable.NAME, DataBaseSchema.PicturesTable.Colons.PATH + " = ?", new String[]{path});
             return true;
         }

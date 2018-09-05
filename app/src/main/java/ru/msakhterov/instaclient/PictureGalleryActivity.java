@@ -152,8 +152,14 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
                 revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 mPictureLab.addPhotoToDb(photoFile);
                 Snackbar.make(findViewById(R.id.coordinator), R.string.photo_added, Snackbar.LENGTH_LONG).show();
+                updatePicturesList();
             }
         }
+    }
+
+    public void updatePicturesList() {
+        PicturesGalleryFragment fragment = (PicturesGalleryFragment) mPictureFragmentPagerAdapter.getCurrentFragment();
+        fragment.updateUI();
     }
 
 }

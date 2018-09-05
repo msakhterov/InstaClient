@@ -7,10 +7,13 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ToggleButton;
 
 import com.squareup.picasso.Picasso;
 
@@ -41,7 +44,7 @@ public class PicturesGalleryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
             spanCount = Constants.SPAN_COUNT_VERTICAL;
         else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
             spanCount = Constants.SPAN_COUNT_HORIZONTAL;
@@ -60,26 +63,46 @@ public class PicturesGalleryFragment extends Fragment {
         void onPictureSelected(Picture picture);
     }
 
-    private class PictureHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private class PictureHolder extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
         private Picture picture;
         private ImageView mItemImageView;
+        private ToggleButton mToggleButton;
 
         PictureHolder(View itemView) {
             super(itemView);
             mItemImageView = itemView.findViewById(R.id.item_image_view);
-            itemView.setOnClickListener(this);
+            mToggleButton = itemView.findViewById(R.id.favourites_btn);
+            mToggleButton.setChecked(false);
+
+            mItemImageView.setOnClickListener(this);
+            mToggleButton.setOnCheckedChangeListener(this);
         }
 
         public void bind(Picture picture) {
             this.picture = picture;
             Picasso.with(getContext()).load(picture.getPath()).resize(mPictureLab.getImagePreviewSize(spanCount), mPictureLab.getImagePreviewSize(spanCount)).into(mItemImageView);
+            mToggleButton.setChecked(picture.isFavorite() == Constants.IS_FAVORITE);
+
         }
 
         @Override
         public void onClick(View view) {
             mPictureGalleryListener.onPictureSelected(picture);
         }
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (isChecked) {
+                picture.setFavorite(Constants.IS_FAVORITE);
+                Log.d(TAG, "setFavorite");
+            } else {
+                picture.setFavorite(Constants.IS_NOT_FAVORITE);
+                Log.d(TAG, "setNoFavorite");
+            }
+
+        }
+
     }
 
     private class PictureGalleryAdapter extends RecyclerView.Adapter<PictureHolder> {
@@ -94,7 +117,7 @@ public class PicturesGalleryFragment extends Fragment {
         @Override
         public PictureHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
-            View view = inflater.inflate(R.layout.picture_gallery_item, parent, false);
+            View view = inflater.inflate(R.layout.picture_gallery_item_test, parent, false);
             return new PictureHolder(view);
         }
 

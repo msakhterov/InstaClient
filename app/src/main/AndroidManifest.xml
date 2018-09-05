@@ -27,7 +27,7 @@
             android:parentActivityName=".PictureGalleryActivity"></activity>
         <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.msakhterov.instaclient.fileprovider"
+            android:authorities="@string/file_provider_authorities"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

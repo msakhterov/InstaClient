@@ -40,7 +40,6 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
     private File photoFile;
     private PictureLab mPictureLab;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -129,7 +128,7 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
             Log.d(TAG, photoFile.getPath());
             if (photoFile != null) {
                 Uri uri = FileProvider.getUriForFile(this,
-                        "com.msakhterov.instaclient.fileprovider",
+                        getString(R.string.file_provider_authorities),
                         photoFile);
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
                 List<ResolveInfo> cameraActivities = getPackageManager().queryIntentActivities(cameraIntent,
@@ -148,7 +147,7 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_PHOTO) {
                 Uri uri = FileProvider.getUriForFile(this,
-                        "com.msakhterov.instaclient.fileprovider",
+                        getString(R.string.file_provider_authorities),
                         photoFile);
                 revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 Snackbar.make(findViewById(R.id.coordinator), R.string.photo_added, Snackbar.LENGTH_LONG).show();

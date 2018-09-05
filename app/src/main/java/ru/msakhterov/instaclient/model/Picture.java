@@ -1,6 +1,5 @@
 package ru.msakhterov.instaclient.model;
 
-import android.graphics.Bitmap;
 import android.text.format.DateFormat;
 
 import java.io.File;
@@ -10,6 +9,7 @@ public class Picture {
 
     private String dateFormat = "yyyyMMdd_HHmmss";
     private File path;
+    private int isFavorite;
 
     public Picture() {
     }
@@ -24,5 +24,13 @@ public class Picture {
 
     public File getPath() {
         return path;
+    }
+
+    public int isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(int favorite) {
+        isFavorite = favorite;
     }
 }

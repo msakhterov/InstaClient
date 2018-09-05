@@ -15,7 +15,7 @@ import ru.msakhterov.instaclient.model.Picture;
 
 public class DataBaseManager {
 
-    private static final String TAG = "TasksManager";
+    private static final String TAG = "DataBaseManager";
     private static DataBaseManager dataBaseManager;
     private Context context;
     private SQLiteDatabase database;
@@ -49,16 +49,6 @@ public class DataBaseManager {
         return new GetPicturesList().loadInBackground();
     }
 
-    public void updatePurpose(Picture picture) {
-        new UpdatePictureAsyncTask().execute(picture);
-
-    }
-
-    public void deletePicture(Picture picture) {
-        new DeletePictureAsyncTask().execute(picture);
-
-    }
-
     private PictureCursorWrapper queryPictures(String whereClause, String[] whereArgs) {
         Cursor cursor = database.query(
                 DataBaseSchema.PicturesTable.NAME,
@@ -70,6 +60,15 @@ public class DataBaseManager {
                 null  // orderBy
         );
         return new PictureCursorWrapper(cursor);
+    }
+
+    public void updatePicture(Picture picture) {
+        new UpdatePictureAsyncTask().execute(picture);
+
+    }
+
+    public void deletePicture(Picture picture) {
+        new DeletePictureAsyncTask().execute(picture);
     }
 
     @SuppressLint("StaticFieldLeak")

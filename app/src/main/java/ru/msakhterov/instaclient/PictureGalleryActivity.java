@@ -3,8 +3,6 @@ package ru.msakhterov.instaclient;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -13,9 +11,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentTransaction;
+import android.support.design.widget.TabLayout;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -26,19 +25,20 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.io.File;
-import java.util.List;
 
 import ru.msakhterov.instaclient.model.Picture;
 import ru.msakhterov.instaclient.utils.Constants;
+import ru.msakhterov.instaclient.utils.PictureFragmentPagerAdapter;
 import ru.msakhterov.instaclient.utils.PictureLab;
 
 public class PictureGalleryActivity extends AppCompatActivity implements PicturesGalleryFragment.PictureGalleryListener, NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String PICTURE_GALLERY_FRAGMENT_TAG = "picture_gallery_fragment_tag";
-    private static final String TAG = "PictureGalleryActTag";
+    private static final String TAG = "PictureGalleryAct";
     private static final int REQUEST_PHOTO = 0;
     private File photoFile;
     private PictureLab mPictureLab;
+    private ViewPager mViewPager;
+    private PictureFragmentPagerAdapter mPictureFragmentPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +59,16 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        mPictureFragmentPagerAdapter = new PictureFragmentPagerAdapter(getSupportFragmentManager());
+        mViewPager = findViewById(R.id.fragment_container);
+        mViewPager.setAdapter(mPictureFragmentPagerAdapter);
+
+        TabLayout tabLayout = findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);
+
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,11 +76,6 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
                 addNewPhoto();
             }
         });
-
-        PicturesGalleryFragment picturesGalleryFragment = new PicturesGalleryFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.fragment_container, picturesGalleryFragment, PICTURE_GALLERY_FRAGMENT_TAG);
-        transaction.commit();
     }
 
     @Override
@@ -102,7 +107,6 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
 
         switch (item.getItemId()) {
             case R.id.picture_gallery_drawer:
-                recreate();
                 drawer.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.change_theme_drawer:
@@ -131,11 +135,7 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
                         getString(R.string.file_provider_authorities),
                         photoFile);
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                List<ResolveInfo> cameraActivities = getPackageManager().queryIntentActivities(cameraIntent,
-                        PackageManager.MATCH_DEFAULT_ONLY);
-                for (ResolveInfo activity : cameraActivities) {
-                    grantUriPermission(activity.activityInfo.packageName, uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                }
+
                 startActivityForResult(cameraIntent, REQUEST_PHOTO);
             }
         }
@@ -150,14 +150,10 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
                         getString(R.string.file_provider_authorities),
                         photoFile);
                 revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                mPictureLab.addPhotoToDb(photoFile);
                 Snackbar.make(findViewById(R.id.coordinator), R.string.photo_added, Snackbar.LENGTH_LONG).show();
-                updatePicturesList();
             }
         }
     }
 
-    public void updatePicturesList() {
-        PicturesGalleryFragment picturesGalleryFragment = (PicturesGalleryFragment) getSupportFragmentManager().findFragmentByTag(PICTURE_GALLERY_FRAGMENT_TAG);
-        picturesGalleryFragment.updateUI();
-    }
 }

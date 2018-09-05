@@ -27,12 +27,22 @@ import ru.msakhterov.instaclient.utils.PictureLab;
 public class PicturesGalleryFragment extends Fragment {
 
     private static final String TAG = "PicturesGalleryFragment";
+    private static final String ARG_FRAGMENT_TYPE = "fragment_type";
     private RecyclerView mRecyclerView;
     private PictureGalleryListener mPictureGalleryListener;
     private PictureGalleryAdapter mPictureGalleryAdapter;
     private PictureLab mPictureLab;
     private int spanCount;
+    private int fragmentType;
 
+    public static PicturesGalleryFragment newInstance(int fragmentType) {
+        Bundle args = new Bundle();
+        args.putInt(ARG_FRAGMENT_TYPE, fragmentType);
+
+        PicturesGalleryFragment fragment = new PicturesGalleryFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -48,6 +58,7 @@ public class PicturesGalleryFragment extends Fragment {
             spanCount = Constants.SPAN_COUNT_VERTICAL;
         else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
             spanCount = Constants.SPAN_COUNT_HORIZONTAL;
+        fragmentType = getArguments().getInt(ARG_FRAGMENT_TYPE);
     }
 
     @Override
@@ -55,8 +66,27 @@ public class PicturesGalleryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_gallery, container, false);
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
-        updateUI();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
+    public void updateUI() {
+        List<Picture> pictures;
+        if (fragmentType == Constants.ALL_FRAGMENT_TYPE)
+            pictures = mPictureLab.getPicturesList();
+        else pictures = mPictureLab.getFavouritesPicturesList();
+        if (mPictureGalleryAdapter == null) {
+            mPictureGalleryAdapter = new PictureGalleryAdapter(pictures);
+        } else {
+            mPictureGalleryAdapter.setPictures(pictures);
+            mPictureGalleryAdapter.notifyDataSetChanged();
+        }
+        mRecyclerView.setAdapter(mPictureGalleryAdapter);
     }
 
     public interface PictureGalleryListener {
@@ -72,8 +102,7 @@ public class PicturesGalleryFragment extends Fragment {
         PictureHolder(View itemView) {
             super(itemView);
             mItemImageView = itemView.findViewById(R.id.item_image_view);
-            mToggleButton = itemView.findViewById(R.id.favourites_btn);
-            mToggleButton.setChecked(false);
+            mToggleButton = itemView.findViewById(R.id.item_favourites_btn);
 
             mItemImageView.setOnClickListener(this);
             mToggleButton.setOnCheckedChangeListener(this);
@@ -83,7 +112,6 @@ public class PicturesGalleryFragment extends Fragment {
             this.picture = picture;
             Picasso.with(getContext()).load(picture.getPath()).resize(mPictureLab.getImagePreviewSize(spanCount), mPictureLab.getImagePreviewSize(spanCount)).into(mItemImageView);
             mToggleButton.setChecked(picture.isFavorite() == Constants.IS_FAVORITE);
-
         }
 
         @Override
@@ -100,9 +128,8 @@ public class PicturesGalleryFragment extends Fragment {
                 picture.setFavorite(Constants.IS_NOT_FAVORITE);
                 Log.d(TAG, "setNoFavorite");
             }
-
+            mPictureLab.setFavourites(picture);
         }
-
     }
 
     private class PictureGalleryAdapter extends RecyclerView.Adapter<PictureHolder> {
@@ -117,7 +144,7 @@ public class PicturesGalleryFragment extends Fragment {
         @Override
         public PictureHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
-            View view = inflater.inflate(R.layout.picture_gallery_item_test, parent, false);
+            View view = inflater.inflate(R.layout.picture_gallery_item, parent, false);
             return new PictureHolder(view);
         }
 
@@ -136,16 +163,5 @@ public class PicturesGalleryFragment extends Fragment {
         public void setPictures(List<Picture> pictures) {
             this.pictures = pictures;
         }
-    }
-
-    public void updateUI() {
-        List<Picture> pictures = mPictureLab.getPicturesList();
-        if (mPictureGalleryAdapter == null) {
-            mPictureGalleryAdapter = new PictureGalleryAdapter(pictures);
-        } else {
-            mPictureGalleryAdapter.setPictures(pictures);
-            mPictureGalleryAdapter.notifyDataSetChanged();
-        }
-        mRecyclerView.setAdapter(mPictureGalleryAdapter);
     }
 }

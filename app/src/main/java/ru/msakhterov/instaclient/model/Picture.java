@@ -5,6 +5,8 @@ import android.text.format.DateFormat;
 import java.io.File;
 import java.util.Date;
 
+import ru.msakhterov.instaclient.utils.Constants;
+
 public class Picture {
 
     private String dateFormat = "yyyyMMdd_HHmmss";
@@ -16,6 +18,7 @@ public class Picture {
 
     public Picture(File path) {
         this.path = path;
+        isFavorite = Constants.IS_NOT_FAVORITE;
     }
 
     public String getPhotoFilename() {

@@ -6,24 +6,41 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.msakhterov.instaclient.PicturesGalleryFragment;
 
 public class PictureFragmentPagerAdapter extends FragmentPagerAdapter {
 
+    private static final String TAG = "FragmentPagerAdapter";
     private Fragment mCurrentFragment;
+    private List<PicturesGalleryFragment> fragments = new ArrayList<>();
 
     public PictureFragmentPagerAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);
     }
 
 
+    public List<PicturesGalleryFragment> getFragments() {
+        return fragments;
+    }
+
     @Override
+
     public Fragment getItem(int position) {
+        PicturesGalleryFragment fragment;
         switch (position) {
             case 0:
-                return PicturesGalleryFragment.newInstance(Constants.ALL_FRAGMENT_TYPE);
+                fragment = PicturesGalleryFragment.newInstance(Constants.ALL_FRAGMENT_TYPE);
+                fragments.add(fragment);
+                return fragment;
+//                return PicturesGalleryFragment.newInstance(Constants.ALL_FRAGMENT_TYPE);
             case 1:
-                return PicturesGalleryFragment.newInstance(Constants.FAVORITES_FRAGMENT_TYPE);
+                fragment = PicturesGalleryFragment.newInstance(Constants.FAVORITES_FRAGMENT_TYPE);
+                fragments.add(fragment);
+                return fragment;
+//                return PicturesGalleryFragment.newInstance(Constants.FAVORITES_FRAGMENT_TYPE);
             default:
                 throw new IllegalArgumentException("Could not create fragment for position " + position);
         }

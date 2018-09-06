@@ -162,4 +162,9 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
         fragment.updateUI();
     }
 
+    public void updateFragments() {
+        for (PicturesGalleryFragment fragment : mPictureFragmentPagerAdapter.getFragments())
+            fragment.updateUI();
+    }
+
 }

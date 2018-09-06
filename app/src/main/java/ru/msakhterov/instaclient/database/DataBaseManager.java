@@ -7,10 +7,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.support.v4.content.AsyncTaskLoader;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.msakhterov.instaclient.PictureGalleryActivity;
 import ru.msakhterov.instaclient.model.Picture;
 
 public class DataBaseManager {
@@ -128,6 +130,8 @@ public class DataBaseManager {
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
+            Log.d(TAG, "UpdatePictureAsyncTask");
+            ((PictureGalleryActivity) context).updateFragments();
         }
     }
 

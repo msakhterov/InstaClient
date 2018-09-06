@@ -72,6 +72,7 @@ public class PicturesGalleryFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume " + "fragmentType = " + fragmentType);
         updateUI();
     }
 
@@ -105,7 +106,7 @@ public class PicturesGalleryFragment extends Fragment {
             mToggleButton = itemView.findViewById(R.id.item_favourites_btn);
 
             mItemImageView.setOnClickListener(this);
-            mToggleButton.setOnCheckedChangeListener(this);
+            mToggleButton.setOnClickListener(this);
         }
 
         public void bind(Picture picture) {
@@ -116,7 +117,23 @@ public class PicturesGalleryFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            mPictureGalleryListener.onPictureSelected(picture);
+            switch (view.getId()) {
+                case R.id.item_image_view:
+                    mPictureGalleryListener.onPictureSelected(picture);
+                    break;
+                case R.id.item_favourites_btn:
+                    if (mToggleButton.isChecked()) {
+                        picture.setFavorite(Constants.IS_FAVORITE);
+                        Log.d(TAG, "setFavorite");
+                    } else {
+                        picture.setFavorite(Constants.IS_NOT_FAVORITE);
+                        Log.d(TAG, "setNoFavorite");
+                    }
+                    mPictureLab.setFavourites(picture);
+                    break;
+            }
+
+
         }
 
         @Override

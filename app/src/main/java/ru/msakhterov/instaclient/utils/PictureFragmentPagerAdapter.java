@@ -35,12 +35,10 @@ public class PictureFragmentPagerAdapter extends FragmentPagerAdapter {
                 fragment = PicturesGalleryFragment.newInstance(Constants.ALL_FRAGMENT_TYPE);
                 fragments.add(fragment);
                 return fragment;
-//                return PicturesGalleryFragment.newInstance(Constants.ALL_FRAGMENT_TYPE);
             case 1:
                 fragment = PicturesGalleryFragment.newInstance(Constants.FAVORITES_FRAGMENT_TYPE);
                 fragments.add(fragment);
                 return fragment;
-//                return PicturesGalleryFragment.newInstance(Constants.FAVORITES_FRAGMENT_TYPE);
             default:
                 throw new IllegalArgumentException("Could not create fragment for position " + position);
         }

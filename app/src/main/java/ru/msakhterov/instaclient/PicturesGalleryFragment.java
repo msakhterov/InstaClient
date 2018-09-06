@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ToggleButton;
 
@@ -94,7 +93,7 @@ public class PicturesGalleryFragment extends Fragment {
         void onPictureSelected(Picture picture);
     }
 
-    private class PictureHolder extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+    private class PictureHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private Picture picture;
         private ImageView mItemImageView;
@@ -132,20 +131,6 @@ public class PicturesGalleryFragment extends Fragment {
                     mPictureLab.setFavourites(picture);
                     break;
             }
-
-
-        }
-
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            if (isChecked) {
-                picture.setFavorite(Constants.IS_FAVORITE);
-                Log.d(TAG, "setFavorite");
-            } else {
-                picture.setFavorite(Constants.IS_NOT_FAVORITE);
-                Log.d(TAG, "setNoFavorite");
-            }
-            mPictureLab.setFavourites(picture);
         }
     }
 

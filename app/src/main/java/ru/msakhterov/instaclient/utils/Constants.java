@@ -8,7 +8,7 @@ public class Constants {
     public static int IS_NOT_FAVORITE = 0;
     public static int ALL_FRAGMENT_TYPE = 0;
     public static int FAVORITES_FRAGMENT_TYPE = 1;
-    public static String ALL_FRAGMENT_TITLE = "All Pictures";
-    public static String FAVORITES_FRAGMENT_TITLE = "Favourites Pictures";
+    public static String ALL_FRAGMENT_TITLE = "Pictures";
+    public static String FAVORITES_FRAGMENT_TITLE = "Favourites";
 
 }

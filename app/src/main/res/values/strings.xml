@@ -8,4 +8,7 @@
     <string name="navigation_drawer_close">Close drawer</string>
     <string name="photo_added">Photo added</string>
     <string name="all_tab">ALL</string>
+    <string name="action_main">Главная</string>
+    <string name="action_db">Загружено из БД</string>
+    <string name="action_web">Загружено из сети</string>
 </resources>

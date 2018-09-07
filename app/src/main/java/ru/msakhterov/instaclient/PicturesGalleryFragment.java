@@ -23,7 +23,11 @@ import ru.msakhterov.instaclient.utils.Constants;
 import ru.msakhterov.instaclient.utils.PictureLab;
 
 
-public class PicturesGalleryFragment extends Fragment {
+public class PicturesGalleryFragment extends Fragment implements UpdatableFragment {
+
+    public static final String TAG_ALL = "all";
+    public static final String TAG_DB = "db";
+    public static final String TAG_WEB = "web";
 
     private static final String TAG = "PicturesGalleryFragment";
     private static final String ARG_FRAGMENT_TYPE = "fragment_type";

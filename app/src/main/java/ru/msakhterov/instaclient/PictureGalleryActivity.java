@@ -36,6 +36,7 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
     private static final String TAG = "PictureGalleryAct";
     private static final int REQUEST_PHOTO = 0;
     private File photoFile;
+    private FloatingActionButton fab;
     private PictureLab mPictureLab;
     private ViewPager mViewPager;
     private PictureFragmentPagerAdapter mPictureFragmentPagerAdapter;
@@ -67,9 +68,11 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
         tabLayout.setupWithViewPager(mViewPager);
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+
+        fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -158,12 +161,12 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
     }
 
     public void updatePicturesList() {
-        PicturesGalleryFragment fragment = (PicturesGalleryFragment) mPictureFragmentPagerAdapter.getCurrentFragment();
+        UpdatableFragment fragment = (UpdatableFragment) mPictureFragmentPagerAdapter.getCurrentFragment();
         fragment.updateUI();
     }
 
     public void updateFragments() {
-        for (PicturesGalleryFragment fragment : mPictureFragmentPagerAdapter.getFragments())
+        for (UpdatableFragment fragment : mPictureFragmentPagerAdapter.getFragments())
             fragment.updateUI();
     }
 

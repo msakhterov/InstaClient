@@ -9,36 +9,35 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.msakhterov.instaclient.MainFragment;
 import ru.msakhterov.instaclient.PicturesGalleryFragment;
+import ru.msakhterov.instaclient.UpdatableFragment;
 
 public class PictureFragmentPagerAdapter extends FragmentPagerAdapter {
 
     private static final String TAG = "FragmentPagerAdapter";
     private Fragment mCurrentFragment;
-    private List<PicturesGalleryFragment> fragments = new ArrayList<>();
+    private List<UpdatableFragment> fragments;
 
     public PictureFragmentPagerAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);
     }
 
-
-    public List<PicturesGalleryFragment> getFragments() {
-        return fragments;
-    }
-
     @Override
 
     public Fragment getItem(int position) {
-        PicturesGalleryFragment fragment;
+        fragments = new ArrayList<>();
         switch (position) {
             case 0:
-                fragment = PicturesGalleryFragment.newInstance(Constants.ALL_FRAGMENT_TYPE);
-                fragments.add(fragment);
-                return fragment;
+                MainFragment mainFragment = MainFragment.newInstance();
+
+//                fragment = PicturesGalleryFragment.newInstance(Constants.ALL_FRAGMENT_TYPE);
+//                fragments.add(mainFragment);
+                return mainFragment;
             case 1:
-                fragment = PicturesGalleryFragment.newInstance(Constants.FAVORITES_FRAGMENT_TYPE);
-                fragments.add(fragment);
-                return fragment;
+                PicturesGalleryFragment picturesGalleryFragment = PicturesGalleryFragment.newInstance(Constants.FAVORITES_FRAGMENT_TYPE);
+                fragments.add(picturesGalleryFragment);
+                return picturesGalleryFragment;
             default:
                 throw new IllegalArgumentException("Could not create fragment for position " + position);
         }
@@ -76,8 +75,11 @@ public class PictureFragmentPagerAdapter extends FragmentPagerAdapter {
         super.setPrimaryItem(container, position, object);
     }
 
-
     public Fragment getCurrentFragment() {
         return mCurrentFragment;
+    }
+
+    public List<UpdatableFragment> getFragments() {
+        return fragments;
     }
 }

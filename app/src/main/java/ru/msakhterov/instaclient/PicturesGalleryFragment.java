@@ -57,10 +57,11 @@ public class PicturesGalleryFragment extends Fragment implements UpdatableFragme
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             spanCount = Constants.SPAN_COUNT_VERTICAL;
-        else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             spanCount = Constants.SPAN_COUNT_HORIZONTAL;
+        }
         fragmentType = getArguments().getInt(ARG_FRAGMENT_TYPE);
     }
 
@@ -97,7 +98,7 @@ public class PicturesGalleryFragment extends Fragment implements UpdatableFragme
         void onPictureSelected(Picture picture);
     }
 
-    private class PictureHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class PictureHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private Picture picture;
         private ImageView mItemImageView;

@@ -34,12 +34,7 @@ public class MainFragment extends Fragment implements UpdatableFragment {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         containerFrame = view.findViewById(R.id.containerFrame);
         mFragmentManager = getChildFragmentManager();
-
-        if (mFragmentManager.findFragmentByTag(TAG_ALL) == null) {
-            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-            fragmentTransaction.add(R.id.containerFrame, PicturesGalleryFragment.newInstance(Constants.ALL_FRAGMENT_TYPE), TAG_ALL);
-            fragmentTransaction.commit();
-        }
+        addAllFragment();
 
         BottomNavigationView bnv = view.findViewById(R.id.bnv);
         bnv.setOnNavigationItemSelectedListener(
@@ -47,31 +42,62 @@ public class MainFragment extends Fragment implements UpdatableFragment {
                     @Override
                     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                         FragmentTransaction fragmentTransaction;
+                        Fragment currentFragment = mFragmentManager.findFragmentById(R.id.containerFrame);
                         switch (item.getItemId()) {
                             case R.id.action_all:
-                                Fragment allFragment = mFragmentManager.findFragmentByTag(TAG_ALL);
-                                if (allFragment == null) {
-                                    allFragment = PicturesGalleryFragment.newInstance(Constants.ALL_FRAGMENT_TYPE);
+                                if (currentFragment instanceof PicturesGalleryFragment) {
+                                    fragmentTransaction = mFragmentManager.beginTransaction();
+                                    fragmentTransaction.replace(R.id.containerFrame, PicturesGalleryFragment.newInstance(Constants.ALL_FRAGMENT_TYPE), TAG_ALL);
+                                    fragmentTransaction.commit();
+                                } else {
+                                    addAllFragment();
                                 }
-                                fragmentTransaction = mFragmentManager.beginTransaction();
-                                fragmentTransaction.replace(R.id.containerFrame, allFragment, TAG_ALL);
-                                fragmentTransaction.commit();
                                 return true;
                             case R.id.action_db:
-                                fragmentTransaction = mFragmentManager.beginTransaction();
-                                fragmentTransaction.replace(R.id.containerFrame, DbFragment.newInstance(), TAG_DB);
-                                fragmentTransaction.commit();
+                                if (currentFragment instanceof DbFragment) {
+                                    fragmentTransaction = mFragmentManager.beginTransaction();
+                                    fragmentTransaction.replace(R.id.containerFrame, DbFragment.newInstance(), TAG_DB);
+                                    fragmentTransaction.commit();
+                                } else {
+                                    Fragment dbFragment = mFragmentManager.findFragmentByTag(TAG_DB);
+                                    if (dbFragment == null) {
+                                        dbFragment = DbFragment.newInstance();
+                                    }
+                                    fragmentTransaction = mFragmentManager.beginTransaction();
+                                    fragmentTransaction.replace(R.id.containerFrame, dbFragment, TAG_DB);
+                                    fragmentTransaction.commit();
+                                }
                                 return true;
                             case R.id.action_web:
-                                fragmentTransaction = mFragmentManager.beginTransaction();
-                                fragmentTransaction.replace(R.id.containerFrame, WebFragment.newInstance(), TAG_WEB);
-                                fragmentTransaction.commit();
+                                if (currentFragment instanceof WebFragment) {
+                                    fragmentTransaction = mFragmentManager.beginTransaction();
+                                    fragmentTransaction.replace(R.id.containerFrame, WebFragment.newInstance(), TAG_WEB);
+                                    fragmentTransaction.commit();
+                                } else {
+                                    Fragment webFragment = mFragmentManager.findFragmentByTag(TAG_WEB);
+                                    if (webFragment == null) {
+                                        webFragment = WebFragment.newInstance();
+                                    }
+                                    fragmentTransaction = mFragmentManager.beginTransaction();
+                                    fragmentTransaction.replace(R.id.containerFrame, webFragment, TAG_WEB);
+                                    fragmentTransaction.commit();
+                                }
                                 return true;
                         }
                         return false;
                     }
                 });
         return view;
+    }
+
+    private void addAllFragment() {
+        Fragment allFragment = mFragmentManager.findFragmentByTag(TAG_ALL);
+        if (allFragment == null) {
+            allFragment = PicturesGalleryFragment.newInstance(Constants.ALL_FRAGMENT_TYPE);
+        }
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.containerFrame, allFragment, TAG_ALL);
+        fragmentTransaction.commit();
     }
 
     public void updateUI() {

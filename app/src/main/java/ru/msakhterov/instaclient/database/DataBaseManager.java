@@ -19,19 +19,15 @@ public class DataBaseManager {
 
     private static final String TAG = "DataBaseManager";
     private static DataBaseManager dataBaseManager;
-    private Context context;
     private SQLiteDatabase database;
 
-    public DataBaseManager(Context context) {
-        this.context = context;
+    private DataBaseManager(Context context) {
         database = new DataBaseHelper(context).getWritableDatabase();
     }
 
     public static DataBaseManager getDataBaseManager(Context context) {
         if (dataBaseManager == null) {
             dataBaseManager = new DataBaseManager(context);
-        } else {
-            dataBaseManager.context = context;
         }
         return dataBaseManager;
     }
@@ -45,32 +41,6 @@ public class DataBaseManager {
 
     public void addPicture(Picture picture) {
         new AddPictureAsyncTask().execute(picture);
-    }
-
-    public List<Picture> getPicturesList() {
-        return new GetPicturesList().loadInBackground();
-    }
-
-    private PictureCursorWrapper queryPictures(String whereClause, String[] whereArgs) {
-        Cursor cursor = database.query(
-                DataBaseSchema.PicturesTable.NAME,
-                null, // Columns - null selects all columns
-                whereClause,
-                whereArgs,
-                null, // groupBy
-                null, // having
-                null  // orderBy
-        );
-        return new PictureCursorWrapper(cursor);
-    }
-
-    public void updatePicture(Picture picture) {
-        new UpdatePictureAsyncTask().execute(picture);
-
-    }
-
-    public void deletePicture(Picture picture) {
-        new DeletePictureAsyncTask().execute(picture);
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -90,11 +60,36 @@ public class DataBaseManager {
         }
     }
 
+    public List<Picture> getPicturesList(Context context) {
+        return new GetPicturesList(context).loadInBackground();
+    }
+
+    public void updatePicture(Picture picture, Context context) {
+        new UpdatePictureAsyncTask(context).execute(picture);
+    }
+
+    public void deletePicture(Picture picture) {
+        new DeletePictureAsyncTask().execute(picture);
+    }
+
+    private PictureCursorWrapper queryPictures(String whereClause, String[] whereArgs) {
+        Cursor cursor = database.query(
+                DataBaseSchema.PicturesTable.NAME,
+                null, // Columns - null selects all columns
+                whereClause,
+                whereArgs,
+                null, // groupBy
+                null, // having
+                null  // orderBy
+        );
+        return new PictureCursorWrapper(cursor);
+    }
+
     @SuppressLint("StaticFieldLeak")
     private class GetPicturesList extends AsyncTaskLoader {
         List<Picture> pictures;
 
-        public GetPicturesList() {
+        public GetPicturesList(Context context) {
             super(context);
             pictures = new ArrayList<>();
         }
@@ -116,7 +111,30 @@ public class DataBaseManager {
     }
 
     @SuppressLint("StaticFieldLeak")
+    private class DeletePictureAsyncTask extends AsyncTask<Picture, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Picture... pictures) {
+            Picture picture = pictures[0];
+            String path = picture.getPath().toString();
+            database.delete(DataBaseSchema.PicturesTable.NAME, DataBaseSchema.PicturesTable.Colons.PATH + " = ?", new String[]{path});
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+        }
+    }
+
+    @SuppressLint("StaticFieldLeak")
     private class UpdatePictureAsyncTask extends AsyncTask<Picture, Void, Boolean> {
+
+        private Context context;
+
+        public UpdatePictureAsyncTask(Context context) {
+            this.context = context;
+        }
 
         @Override
         protected Boolean doInBackground(Picture... pictures) {
@@ -132,23 +150,6 @@ public class DataBaseManager {
             super.onPostExecute(aBoolean);
             Log.d(TAG, "UpdatePictureAsyncTask");
             ((PictureGalleryActivity) context).updateFragments();
-        }
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    private class DeletePictureAsyncTask extends AsyncTask<Picture, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(Picture... pictures) {
-            Picture picture = pictures[0];
-            String path = picture.getPath().toString();
-            database.delete(DataBaseSchema.PicturesTable.NAME, DataBaseSchema.PicturesTable.Colons.PATH + " = ?", new String[]{path});
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
         }
     }
 }

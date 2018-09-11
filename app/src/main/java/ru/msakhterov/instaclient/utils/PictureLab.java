@@ -30,19 +30,19 @@ public class PictureLab {
     }
 
     public List<Picture> getPicturesList() {
-        return DataBaseManager.getDataBaseManager(mActivity).getPicturesList();
+        return DataBaseManager.getDataBaseManager(mActivity).getPicturesList(mActivity);
     }
 
     public List<Picture> getFavouritesPicturesList() {
         List<Picture> favouritesPictures = new ArrayList<>();
-        for (Picture picture : DataBaseManager.getDataBaseManager(mActivity).getPicturesList()) {
+        for (Picture picture : DataBaseManager.getDataBaseManager(mActivity).getPicturesList(mActivity)) {
             if (picture.isFavorite() == Constants.IS_FAVORITE) favouritesPictures.add(picture);
         }
         return favouritesPictures;
     }
 
     public void setFavourites(Picture picture) {
-        DataBaseManager.getDataBaseManager(mActivity).updatePicture(picture);
+        DataBaseManager.getDataBaseManager(mActivity).updatePicture(picture, mActivity);
     }
 
     public int getImagePreviewSize(int countSpan){

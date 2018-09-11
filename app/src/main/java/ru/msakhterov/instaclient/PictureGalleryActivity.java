@@ -12,6 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -166,8 +167,8 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
     }
 
     public void updateFragments() {
-        for (UpdatableFragment fragment : mPictureFragmentPagerAdapter.getFragments())
-            fragment.updateUI();
+        for (Fragment fragment : getSupportFragmentManager().getFragments())
+            ((UpdatableFragment) fragment).updateUI();
     }
 
 }

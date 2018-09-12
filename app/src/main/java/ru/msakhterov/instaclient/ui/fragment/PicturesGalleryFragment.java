@@ -1,4 +1,4 @@
-package ru.msakhterov.instaclient;
+package ru.msakhterov.instaclient.ui.fragment;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -18,6 +18,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import ru.msakhterov.instaclient.R;
 import ru.msakhterov.instaclient.model.Picture;
 import ru.msakhterov.instaclient.utils.Constants;
 import ru.msakhterov.instaclient.utils.PictureLab;

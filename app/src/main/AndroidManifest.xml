@@ -15,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PictureGalleryActivity">
+        <activity android:name=".ui.activity.PictureGalleryActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,8 +23,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ChoiceThemeColorActivity"
-            android:parentActivityName=".PictureGalleryActivity"></activity>
+            android:name=".ui.activity.ChoiceThemeColorActivity"
+            android:parentActivityName=".ui.activity.PictureGalleryActivity"></activity>
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="@string/file_provider_authorities"

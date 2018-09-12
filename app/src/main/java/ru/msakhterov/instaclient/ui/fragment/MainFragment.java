@@ -1,4 +1,4 @@
-package ru.msakhterov.instaclient;
+package ru.msakhterov.instaclient.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import ru.msakhterov.instaclient.R;
 import ru.msakhterov.instaclient.utils.Constants;
 
 

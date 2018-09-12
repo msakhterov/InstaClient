@@ -1,4 +1,4 @@
-package ru.msakhterov.instaclient;
+package ru.msakhterov.instaclient.ui.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -27,7 +27,10 @@ import android.view.View;
 
 import java.io.File;
 
+import ru.msakhterov.instaclient.R;
 import ru.msakhterov.instaclient.model.Picture;
+import ru.msakhterov.instaclient.ui.fragment.PicturesGalleryFragment;
+import ru.msakhterov.instaclient.ui.fragment.UpdatableFragment;
 import ru.msakhterov.instaclient.utils.Constants;
 import ru.msakhterov.instaclient.utils.PictureFragmentPagerAdapter;
 import ru.msakhterov.instaclient.utils.PictureLab;

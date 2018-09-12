@@ -1,4 +1,4 @@
-package ru.msakhterov.instaclient;
+package ru.msakhterov.instaclient.ui.fragment;
 
 public interface UpdatableFragment {
     void updateUI();

@@ -5,8 +5,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.ViewGroup;
 
-import ru.msakhterov.instaclient.MainFragment;
-import ru.msakhterov.instaclient.PicturesGalleryFragment;
+import ru.msakhterov.instaclient.ui.fragment.MainFragment;
+import ru.msakhterov.instaclient.ui.fragment.PicturesGalleryFragment;
 
 public class PictureFragmentPagerAdapter extends FragmentPagerAdapter {
 

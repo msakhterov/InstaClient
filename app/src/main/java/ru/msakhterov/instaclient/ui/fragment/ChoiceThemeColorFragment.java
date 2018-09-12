@@ -1,4 +1,4 @@
-package ru.msakhterov.instaclient;
+package ru.msakhterov.instaclient.ui.fragment;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 
 import java.util.Arrays;
 import java.util.List;
+
+import ru.msakhterov.instaclient.R;
 
 
 public class ChoiceThemeColorFragment extends Fragment {

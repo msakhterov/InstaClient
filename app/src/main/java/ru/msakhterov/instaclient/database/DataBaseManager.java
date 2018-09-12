@@ -12,8 +12,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.msakhterov.instaclient.PictureGalleryActivity;
 import ru.msakhterov.instaclient.model.Picture;
+import ru.msakhterov.instaclient.ui.activity.PictureGalleryActivity;
 
 public class DataBaseManager {
 

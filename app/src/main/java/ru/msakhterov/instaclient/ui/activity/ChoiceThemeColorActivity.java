@@ -1,4 +1,4 @@
-package ru.msakhterov.instaclient;
+package ru.msakhterov.instaclient.ui.activity;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -9,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import ru.msakhterov.instaclient.R;
+import ru.msakhterov.instaclient.ui.fragment.ChoiceThemeColorFragment;
 import ru.msakhterov.instaclient.utils.Constants;
 
 public class ChoiceThemeColorActivity extends AppCompatActivity implements ChoiceThemeColorFragment.ThemeColorListener {

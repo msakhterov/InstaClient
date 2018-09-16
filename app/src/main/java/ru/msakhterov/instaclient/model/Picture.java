@@ -29,6 +29,10 @@ public class Picture {
         return path;
     }
 
+    public void setPath(File path) {
+        this.path = path;
+    }
+
     public int isFavorite() {
         return isFavorite;
     }

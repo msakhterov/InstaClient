@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.msakhterov.instaclient.model.Picture;
-import ru.msakhterov.instaclient.ui.activity.PictureGalleryActivity;
+import ru.msakhterov.instaclient.ui.activity.MainActivity;
 
 public class DataBaseManager {
 
@@ -149,7 +149,7 @@ public class DataBaseManager {
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
             Log.d(TAG, "UpdatePictureAsyncTask");
-            ((PictureGalleryActivity) context).updateFragments();
+            ((MainActivity) context).updateFragments();
         }
     }
 }

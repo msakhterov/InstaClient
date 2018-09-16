@@ -18,30 +18,37 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.arellomobile.mvp.presenter.ProvidePresenter;
+
 import java.io.File;
 
 import ru.msakhterov.instaclient.R;
 import ru.msakhterov.instaclient.model.Picture;
+import ru.msakhterov.instaclient.presentation.presenter.MainPresenter;
+import ru.msakhterov.instaclient.presentation.view.MainView;
 import ru.msakhterov.instaclient.ui.fragment.PicturesGalleryFragment;
 import ru.msakhterov.instaclient.ui.fragment.UpdatableFragment;
 import ru.msakhterov.instaclient.utils.Constants;
 import ru.msakhterov.instaclient.utils.PictureFragmentPagerAdapter;
 import ru.msakhterov.instaclient.utils.PictureLab;
 
-public class PictureGalleryActivity extends AppCompatActivity implements PicturesGalleryFragment.PictureGalleryListener, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends MvpAppCompatActivity implements MainView, PicturesGalleryFragment.PictureGalleryListener,
+        NavigationView.OnNavigationItemSelectedListener {
+
+    @InjectPresenter
+    MainPresenter presenter;
 
     private static final String TAG = "PictureGalleryAct";
     private static final int REQUEST_PHOTO = 0;
-    private File photoFile;
     private FloatingActionButton fab;
-    private PictureLab mPictureLab;
     private ViewPager mViewPager;
     private PictureFragmentPagerAdapter mPictureFragmentPagerAdapter;
 
@@ -52,7 +59,6 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture_gallery_drawer);
-        mPictureLab = new PictureLab(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -80,9 +86,16 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addNewPhoto();
+                presenter.addNewPhoto();
             }
         });
+    }
+
+    @ProvidePresenter
+    public MainPresenter provideMainPresenter() {
+        presenter = new MainPresenter(new PictureLab(this));
+        Log.d(TAG, "Presenter created");
+        return presenter;
     }
 
     @Override
@@ -100,7 +113,7 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.change_theme:
-                selectChoiceThemeColor();
+                presenter.showChoiceThemeActivity();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -117,7 +130,7 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
                 drawer.closeDrawer(GravityCompat.START);
                 return true;
             case R.id.change_theme_drawer:
-                selectChoiceThemeColor();
+                presenter.showChoiceThemeActivity();
                 drawer.closeDrawer(GravityCompat.START);
                 return true;
         }
@@ -125,18 +138,17 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
         return true;
     }
 
-    private void selectChoiceThemeColor() {
+    @Override
+    public void showChoiceThemeActivity() {
         Intent intent = new Intent(this, ChoiceThemeColorActivity.class);
         startActivity(intent);
     }
 
-    private void addNewPhoto() {
+    @Override
+    public void addNewPhoto(File photoFile) {
 
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-            Picture picture = new Picture();
-            photoFile = mPictureLab.getPhotoFile(picture);
-            Log.d(TAG, photoFile.getPath());
             if (photoFile != null) {
                 Uri uri = FileProvider.getUriForFile(this,
                         getString(R.string.file_provider_authorities),
@@ -155,9 +167,9 @@ public class PictureGalleryActivity extends AppCompatActivity implements Picture
             if (requestCode == REQUEST_PHOTO) {
                 Uri uri = FileProvider.getUriForFile(this,
                         getString(R.string.file_provider_authorities),
-                        photoFile);
+                        presenter.getPhotoFile());
                 revokeUriPermission(uri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                mPictureLab.addPhotoToDb(photoFile);
+                presenter.saveNewPhoto();
                 Snackbar.make(findViewById(R.id.coordinator), R.string.photo_added, Snackbar.LENGTH_LONG).show();
                 updatePicturesList();
             }
